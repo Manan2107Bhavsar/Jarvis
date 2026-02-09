@@ -303,9 +303,11 @@ def jarvis_loop():
                     
                     # Check for action triggers
                     if "[[" in ai_text and "]]" in ai_text:
-                        action_result = execute_action(ai_text)
-                        print(f"⚙️ Action: {action_result}")
-                        # Clean up the text by removing the action tag for UI and TTS
+                        actions = re.findall(r'\[\[ACTION:.*?\]\]', ai_text)
+                        for action in actions:
+                            action_result = execute_action(action)
+                            print(f"⚙️ Action: {action_result}")
+                        # Clean up the text by removing all action tags for UI and TTS
                         ai_text = re.sub(r'\[\[ACTION:.*?\]\]', '', ai_text).strip()
 
                     print(f"🤖 Jarvis: {ai_text}")

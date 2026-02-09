@@ -5,13 +5,14 @@ import subprocess
 import re
 
 # Mapping of common software names to their executable names or paths
-# Values can be strings (paths/exes) or lists (exe + arguments)
+# Values can be strings (paths/exes), lists (exe + arguments), or URI protocols
 SOFTWARE_MAPPING = {
     "autocad": r"C:\Program Files\Autodesk\AutoCAD 2026\acad.exe",
     "civil 3d": [r"C:\Program Files\Autodesk\AutoCAD 2026\acad.exe", "/product", "C3D", "/language", "en-US"],
     "autocad civil 3d": [r"C:\Program Files\Autodesk\AutoCAD 2026\acad.exe", "/product", "C3D", "/language", "en-US"],
     "solidworks": r"C:\Program Files\SOLIDWORKS Corp\SOLIDWORKS\SLDWORKS.exe",
     "solidwork": r"C:\Program Files\SOLIDWORKS Corp\SOLIDWORKS\SLDWORKS.exe",
+    "whatsapp": "whatsapp:", # UWP Protocol
     "chrome": "chrome.exe",
     "google chrome": "chrome.exe",
     "excel": "excel.exe",
@@ -35,6 +36,15 @@ def open_software(app_name):
     # Check mapping
     target_data = SOFTWARE_MAPPING.get(app_name_lower, app_name_lower)
     
+    # 0. Check if it's a protocol (ends with :)
+    if isinstance(target_data, str) and target_data.endswith(":"):
+        try:
+            print(f"⚙️ Action: Starting protocol '{target_data}'")
+            os.system(f'start {target_data}')
+            return True
+        except Exception as e:
+            print(f"  - Protocol failed: {e}")
+
     # Split target into exe and args
     if isinstance(target_data, list):
         exe_path = target_data[0]
@@ -88,23 +98,49 @@ def execute_action(action_string):
     Parses and executes an action string like '[[ACTION: OPEN_APP, "app_name"]]'.
     Returns a status message.
     """
-    # Regex to extract action and parameters
-    match = re.search(r'\[\[ACTION:\s*(\w+),\s*"(.*?)"\]\]', action_string)
+    # Regex to extract action and parameters (handles multiple params)
+    # format: [[ACTION: TYPE, "param1", "param2", ...]]
+    match = re.search(r'\[\[ACTION:\s*(\w+)(.*?)]\]', action_string)
     if not match:
         return "No action found."
 
     action_type = match.group(1).upper()
-    param = match.group(2)
+    params_str = match.group(2)
+    params = re.findall(r'"(.*?)"', params_str)
 
     if action_type == "OPEN_APP":
+        param = params[0] if params else ""
         success = open_software(param)
         if success:
             return f"Successfully initiated opening of {param}."
         else:
             return f"Could not find or open {param}, sir."
     
+    elif action_type == "CALL":
+        name = params[0] if params else "someone"
+        print(f"⚙️ Action: Initiating call to {name}")
+        # Try to open WhatsApp or Phone app
+        try:
+            # We can't deep link to a specific call easily without a phone number,
+            # but we can open the app.
+            os.system("start whatsapp:")
+            return f"Opening WhatsApp to call {name} for you, sir."
+        except:
+            return f"Failed to initiate call to {name}."
+
+    elif action_type == "EMAIL":
+        recipient = params[0] if params else ""
+        subject = params[1] if len(params) > 1 else ""
+        print(f"⚙️ Action: Draft email to {recipient}")
+        try:
+            os.system(f'start mailto:{recipient}?subject={subject}')
+            return f"Opening your email client to message {recipient}."
+        except:
+            return f"Failed to open email client."
+    
     return f"Unknown action type: {action_type}"
 
 if __name__ == "__main__":
     # Test
-    print(execute_action('[[ACTION: OPEN_APP, "notepad"]]'))
+    print(execute_action('[[ACTION: OPEN_APP, "whatsapp"]]'))
+    print(execute_action('[[ACTION: EMAIL, "test@example.com", "Hello from Jarvis"]]'))
