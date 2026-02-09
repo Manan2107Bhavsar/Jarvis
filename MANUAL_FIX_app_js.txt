@@ -1,0 +1,33 @@
+// MANUAL FIX NEEDED: Replace the toggleHistoryFolder function with this:
+
+window.toggleHistoryFolder = function(folderId) {
+    const folder = document.getElementById(folderId);
+    if (!folder) return;
+    
+    const header = folder.previousElementSibling;
+    const icon = header.querySelector('.history-date-icon');
+    
+    if (folder.classList.contains('open')) {
+        folder.classList.remove('open');
+        icon.textContent = '▶';
+    } else {
+        folder.classList.add('open');
+        icon.textContent = '▼';
+    }
+};
+
+// ADD THIS FUNCTION after toggleHistoryFolder:
+
+function toggleFullScreen() {
+    if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(err => {
+            console.error(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
+        });
+    } else {
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        }
+    }
+}
+
+// The fullscreen event listener has already been added to setupEventListeners()

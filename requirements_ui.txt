@@ -1,0 +1,4 @@
+# WebSocket Server Requirements
+# Install with: pip install -r requirements_ui.txt
+
+websockets>=12.0

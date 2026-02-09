@@ -1,0 +1,14 @@
+JARVIS Conversation Session
+Started: 20260208-174834
+============================================================
+
+User: open AutoCAD
+
+Jarvis: Certainly, sir. [[ACTION: OPEN_APP, "AutoCAD"]] Opening AutoCAD now.
+
+User: open Notepad
+
+Jarvis: Of course. [[ACTION: OPEN_APP, "Notepad"]] Launching Notepad for you.
+
+============================================================
+Session ended: 2026-02-08 17:49:16

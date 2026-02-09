@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>J.A.R.V.I.S. Interface</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Share+Tech+Mono&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+
+    <!-- BEGIN: Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'rajdhani': ['Rajdhani', 'sans-serif'],
+                        'orbitron': ['Orbitron', 'sans-serif'],
+                        'mono': ['Share Tech Mono', 'monospace'],
+                    },
+                    colors: {
+                        'jarvis-blue': '#00e1ff',
+                        'jarvis-dark': '#020a17',
+                        'jarvis-container-bg': 'rgba(0, 225, 255, 0.05)',
+                    },
+                    boxShadow: {
+                        'jarvis-glow': '0 0 5px rgba(0, 225, 255, 0.7), 0 0 10px rgba(0, 225, 255, 0.5)',
+                        'jarvis-glow-light': '0 0 3px rgba(0, 225, 255, 0.5), 0 0 6px rgba(0, 225, 255, 0.3)',
+                        'jarvis-glow-text': '0 0 8px rgba(0, 225, 255, 0.8)',
+                    },
+                    animation: {
+                        'pulse-glow': 'pulse-glow 3s infinite ease-in-out',
+                        'scan': 'scan 4s linear infinite',
+                        'flicker': 'flicker 1.5s infinite',
+                    },
+                    keyframes: {
+                        'pulse-glow': {
+                            '0%, 100%': { boxShadow: '0 0 20px rgba(0, 225, 255, 0.5), 0 0 40px rgba(0, 225, 255, 0.3)', transform: 'scale(1)' },
+                            '50%': { boxShadow: '0 0 30px rgba(0, 225, 255, 0.8), 0 0 60px rgba(0, 225, 255, 0.5)', transform: 'scale(1.02)' },
+                        },
+                        'scan': {
+                            '0%': { transform: 'translateY(-100%)' },
+                            '100%': { transform: 'translateY(100%)' },
+                        },
+                        'flicker': {
+                            '0%, 100%': { opacity: 1 },
+                            '50%': { opacity: 0.8 },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- END: Tailwind Configuration -->
+</head>
+
+<body class="min-h-screen flex flex-col font-rajdhani text-jarvis-blue overflow-hidden">
+    <!-- Background Particles Container -->
+    <div id="particles-container" class="fixed inset-0 pointer-events-none z-0"></div>
+    <!-- Main container for the entire UI -->
+    <div class="flex-grow flex flex-col p-4 md:p-6 lg:p-8" id="jarvis-ui">
+        <!-- BEGIN: MainHeader -->
+        <header class="w-full text-center py-2 shrink-0" data-purpose="Page Header">
+            <h1 class="text-4xl md:text-5xl font-bold tracking-[0.5em] text-shadow-jarvis-glow font-orbitron">
+                J.A.R.V.I.S.</h1>
+            <p class="text-sm md:text-base tracking-[0.2em] opacity-70">Just A Rather Very Intelligent System</p>
+        </header>
+        <!-- END: MainHeader -->
+
+        <!-- BEGIN: MainContent -->
+        <main class="flex-grow grid grid-cols-1 lg:grid-cols-4 xl:grid-cols-5 gap-6 mt-4 items-center">
+
+            <!-- BEGIN: LeftColumn -->
+            <section class="lg:col-span-1 xl:col-span-1 h-full flex flex-col gap-6"
+                data-purpose="Left Information Panels">
+                <!-- Environmental Panel -->
+                <div class="jarvis-panel p-4 flex-grow flex flex-col">
+                    <h2 class="jarvis-panel-title flex items-center gap-2">
+                        <span class="text-lg">🌡️</span>
+                        <span>Environmental</span>
+                    </h2>
+                    <div class="space-y-3 text-sm flex-grow font-mono">
+                        <div class="flex justify-between"><span>Temperature</span><span class="font-semibold"
+                                id="temp-value">23°C</span></div>
+                        <div class="flex justify-between"><span>Humidity</span><span class="font-semibold"
+                                id="humidity-value">45%</span></div>
+                        <div class="flex justify-between"><span>Pressure</span><span class="font-semibold"
+                                id="pressure-value">1013 hPa</span></div>
+                    </div>
+                    <!-- Graph -->
+                    <div class="h-16 w-full mt-2" data-purpose="Line Graph">
+                        <canvas id="temp-graph" width="200" height="60" class="w-full h-full"></canvas>
+                    </div>
+                </div>
+
+                <!-- Power and Shield Gauges -->
+                <div class="grid grid-cols-2 gap-4">
+                    <!-- Power Gauge -->
+                    <div class="jarvis-panel p-3 text-center">
+                        <div class="relative w-20 h-20 mx-auto">
+                            <svg class="w-full h-full" viewbox="0 0 36 36">
+                                <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                                    fill="none" stroke="rgba(0, 225, 255, 0.1)" stroke-width="3"></path>
+                                <path id="gauge-1-progress"
+                                    class="transform -rotate-90 origin-center transition-all duration-500"
+                                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                                    fill="none" stroke="#00e1ff" stroke-dasharray="59, 100" stroke-linecap="round"
+                                    stroke-width="3" style="filter: drop-shadow(0px 0px 4px #00e1ff);"></path>
+                            </svg>
+                            <span id="gauge-1-text"
+                                class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-xl font-bold font-mono">59%</span>
+                        </div>
+                        <p class="text-xs uppercase tracking-widest mt-2">Power</p>
+                    </div>
+                    <!-- Shield Gauge -->
+                    <div class="jarvis-panel p-3 text-center">
+                        <div class="relative w-20 h-20 mx-auto">
+                            <svg class="w-full h-full" viewbox="0 0 36 36">
+                                <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                                    fill="none" stroke="rgba(0, 225, 255, 0.1)" stroke-width="3"></path>
+                                <path id="gauge-2-progress"
+                                    class="transform -rotate-90 origin-center transition-all duration-500"
+                                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                                    fill="none" stroke="#00e1ff" stroke-dasharray="29, 100" stroke-linecap="round"
+                                    stroke-width="3" style="filter: drop-shadow(0px 0px 4px #00e1ff);"></path>
+                            </svg>
+                            <span id="gauge-2-text"
+                                class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-xl font-bold font-mono">29%</span>
+                        </div>
+                        <p class="text-xs uppercase tracking-widest mt-2">Shield</p>
+                    </div>
+                </div>
+
+                <!-- Conversation Log -->
+                <div class="jarvis-panel p-4 hidden xl:flex flex-col flex-grow h-64">
+                    <h2 class="jarvis-panel-title flex items-center gap-2 justify-between">
+                        <div class="flex items-center gap-2">
+                            <span class="text-lg">💬</span>
+                            <span>Conversation Log</span>
+                        </div>
+                        <div class="flex gap-2">
+                            <button class="icon-btn" id="fullscreenToggle" title="Toggle Fullscreen">
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <path
+                                        d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" />
+                                </svg>
+                            </button>
+                            <button class="icon-btn history-toggle" id="historyToggle" title="View History">
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <line x1="3" y1="12" x2="21" y2="12" />
+                                    <line x1="3" y1="6" x2="21" y2="6" />
+                                    <line x1="3" y1="18" x2="21" y2="18" />
+                                </svg>
+                            </button>
+                        </div>
+                    </h2>
+                    <div id="conversationLog" class="text-sm font-mono opacity-80 overflow-y-auto flex-grow pr-2">
+                        <div class="log-entry system">
+                            <span class="log-time">00:00:00</span>
+                            <span class="log-text">System initialized. Awaiting input...</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- END: LeftColumn -->
+
+            <!-- BEGIN: CenterColumn -->
+            <section class="lg:col-span-2 xl:col-span-3 h-full flex flex-col justify-center items-center gap-6 relative"
+                data-purpose="Central Orb">
+                <!-- Arc Reactor -->
+                <div id="arc-reactor" class="relative w-full h-full flex items-center justify-center">
+                    <svg viewBox="0 0 500 500" class="reactor-svg w-full h-full max-w-[600px] max-h-[600px]">
+                        <defs>
+                            <filter id="intense-glow" x="-50%" y="-50%" width="200%" height="200%">
+                                <feGaussianBlur stdDeviation="8" result="coloredBlur" />
+                                <feMerge>
+                                    <feMergeNode in="coloredBlur" />
+                                    <feMergeNode in="coloredBlur" />
+                                    <feMergeNode in="SourceGraphic" />
+                                </feMerge>
+                            </filter>
+                        </defs>
+
+                        <!-- Static Background Detail -->
+                        <circle cx="250" cy="250" r="200" class="static-ring" />
+                        <path d="M 250 50 L 250 80 M 250 420 L 250 450 M 50 250 L 80 250 M 420 250 L 450 250"
+                            class="crosshairs" />
+
+                        <!-- Rotating Rings -->
+                        <g id="ring-outer" class="rotating-ring center-pivot"></g>
+                        <g id="ring-middle" class="rotating-ring center-pivot"></g>
+                        <g id="ring-inner" class="rotating-ring center-pivot"></g>
+                        <g id="ring-ticks" class="rotating-ring center-pivot reverse-spin"></g>
+
+                        <!-- Circular Arc Reactor Core -->
+                        <g id="reactor-core" class="center-pivot">
+                            <!-- Rays -->
+                            <g id="core-rays" class="core-rays">
+                                <path d="M 250 250 L 250 50" class="ray-beam" />
+                                <path d="M 250 250 L 450 250" class="ray-beam" />
+                                <path d="M 250 250 L 250 450" class="ray-beam" />
+                                <path d="M 250 250 L 50 250" class="ray-beam" />
+                                <path d="M 250 250 L 391 109" class="ray-beam" />
+                                <path d="M 250 250 L 391 391" class="ray-beam" />
+                                <path d="M 250 250 L 109 391" class="ray-beam" />
+                                <path d="M 250 250 L 109 109" class="ray-beam" />
+                            </g>
+                            <!-- Main Core -->
+                            <circle cx="250" cy="250" r="40" class="core-main" fill="var(--cyan-primary)"
+                                filter="url(#intense-glow)" />
+                            <circle cx="250" cy="250" r="25" class="core-inner" fill="#fff" fill-opacity="0.8"
+                                filter="url(#intense-glow)" />
+                            <circle cx="250" cy="250" r="50" class="core-rim" fill="none" stroke="var(--cyan-bright)"
+                                stroke-width="2" />
+                        </g>
+
+                        <!-- Energy Pulse Rings -->
+                        <circle cx="250" cy="250" r="60" class="energy-pulse pulse-1" />
+                        <circle cx="250" cy="250" r="60" class="energy-pulse pulse-2" />
+                    </svg>
+                </div>
+            </section>
+            <!-- END: CenterColumn -->
+
+            <!-- BEGIN: RightColumn -->
+            <section class="lg:col-span-1 xl:col-span-1 h-full flex flex-col gap-6" data-purpose="Right Status Panels">
+                <!-- System Status Panel -->
+                <div class="jarvis-panel p-4 flex-grow flex flex-col">
+                    <h2 class="jarvis-panel-title flex items-center gap-2">
+                        <svg class="h-4 w-4 animate-spin [animation-duration:3s]" fill="currentColor"
+                            viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path clip-rule="evenodd"
+                                d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.532 1.532 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.532 1.532 0 01-.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106A1.532 1.532 0 0111.49 3.17zM10 13a3 3 0 100-6 3 3 0 000 6z"
+                                fill-rule="evenodd"></path>
+                        </svg>
+                        <span>System Status</span>
+                    </h2>
+                    <div class="space-y-4 text-sm flex-grow font-mono">
+                        <div class="flex justify-between items-center">
+                            <span>Neural Core</span>
+                            <span class="font-semibold text-green-400 text-shadow-jarvis-glow"
+                                id="neural-status">ONLINE</span>
+                        </div>
+                        <!-- CPU Progress Bar -->
+                        <div>
+                            <div class="flex justify-between text-xs mb-1"><span>CPU</span><span>45%</span></div>
+                            <div class="jarvis-progress-bar">
+                                <div id="cpu-bar" style="width: 45%;"></div>
+                            </div>
+                        </div>
+                        <!-- RAM Progress Bar -->
+                        <div>
+                            <div class="flex justify-between text-xs mb-1"><span>RAM</span><span>85%</span></div>
+                            <div class="jarvis-progress-bar">
+                                <div id="ram-bar" style="width: 85%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Auxiliary & Core Bars -->
+                <div class="jarvis-panel p-4 grid grid-cols-2 gap-4">
+                    <!-- Left side bars -->
+                    <div class="space-y-3">
+                        <div class="jarvis-progress-bar h-2">
+                            <div style="width: 80%;"></div>
+                        </div>
+                        <div class="jarvis-progress-bar h-2">
+                            <div style="width: 95%;"></div>
+                        </div>
+                        <div class="jarvis-progress-bar h-2">
+                            <div style="width: 70%;"></div>
+                        </div>
+                    </div>
+                    <!-- Right side vertical bars -->
+                    <div class="space-y-2">
+                        <div data-purpose="aux-1">
+                            <p class="text-xs tracking-wider opacity-70 mb-1">AUX-1</p>
+                            <div class="flex gap-1 h-2">
+                                <div class="w-1/4 bg-jarvis-blue shadow-jarvis-glow-light"></div>
+                                <div class="w-1/4 bg-jarvis-blue shadow-jarvis-glow-light"></div>
+                                <div class="w-1/4 bg-jarvis-blue shadow-jarvis-glow-light"></div>
+                                <div class="w-1/4 bg-jarvis-blue shadow-jarvis-glow-light"></div>
+                            </div>
+                        </div>
+                        <div data-purpose="aux-2">
+                            <p class="text-xs tracking-wider opacity-70 mb-1">AUX-2</p>
+                            <div class="flex gap-1 h-2">
+                                <div class="w-1/4 bg-jarvis-blue shadow-jarvis-glow-light"></div>
+                                <div class="w-1/4 bg-jarvis-blue shadow-jarvis-glow-light"></div>
+                                <div class="w-1/4 bg-jarvis-container-bg border border-jarvis-blue/30"></div>
+                                <div class="w-1/4 bg-jarvis-container-bg border border-jarvis-blue/30"></div>
+                            </div>
+                        </div>
+                        <div data-purpose="core-status">
+                            <p class="text-xs tracking-wider opacity-70 mb-1">CORE</p>
+                            <div class="flex gap-1 h-2">
+                                <div class="w-1/4 bg-jarvis-blue shadow-jarvis-glow-light"></div>
+                                <div class="w-1/4 bg-jarvis-blue shadow-jarvis-glow-light"></div>
+                                <div class="w-1/4 bg-jarvis-blue shadow-jarvis-glow-light"></div>
+                                <div class="w-1/4 bg-jarvis-blue shadow-jarvis-glow-light"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Command Input Panel -->
+                <div class="jarvis-panel p-4">
+                    <h2 class="jarvis-panel-title flex items-center gap-2">
+                        <svg class="h-4 w-4" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path>
+                            <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path>
+                        </svg>
+                        <span>Command Input</span>
+                    </h2>
+                    <div class="flex items-center gap-2">
+                        <input id="commandInput" class="jarvis-input w-full rounded-md text-sm p-2 font-mono"
+                            placeholder="Enter command..." type="text" autocomplete="off" />
+                        <button id="sendBtn" class="jarvis-button p-2 rounded-md">
+                            &gt;
+                        </button>
+                    </div>
+                    <p class="text-xs mt-2 opacity-60" id="inputStatus">Ready</p>
+                </div>
+            </section>
+            <!-- END: RightColumn -->
+        </main>
+        <!-- END: MainContent -->
+
+        <!-- BEGIN: MainFooter -->
+        <footer class="w-full text-center py-2 shrink-0 border-t border-jarvis-blue/20 mt-4" data-purpose="Page Footer">
+            <div class="flex justify-center items-center gap-8 text-xs uppercase tracking-widest opacity-70 font-mono">
+                <span>Uptime: <span class="font-semibold" id="uptime">00:00:00</span></span>
+                <span>Mode: <span class="font-semibold" id="mode">Voice Activated</span></span>
+                <span>Version: <span class="font-semibold">V2.19</span></span>
+            </div>
+        </footer>
+        <!-- END: MainFooter -->
+
+        <!-- History Sidebar -->
+        <div class="history-sidebar" id="historySidebar">
+            <div class="history-header">
+                <h2>CONVERSATION HISTORY</h2>
+                <button class="history-close" id="historyClose">✕</button>
+            </div>
+            <div class="history-search-container">
+                <input type="text" class="history-search" id="historySearch" placeholder="Search history...">
+            </div>
+            <div class="history-list" id="historyList">
+                <div class="history-empty">Loading history...</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>

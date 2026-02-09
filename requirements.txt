@@ -1,0 +1,9 @@
+google-generativeai
+google-cloud-speech
+
+requests
+SpeechRecognition
+pyaudio
+pygame
+websockets
+beautifulsoup4
