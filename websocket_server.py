@@ -188,6 +188,9 @@ def run_async(coro):
 # Event for wake word detection
 wake_word_event = threading.Event()
 
+# Queue for passing wake word text to jarvis_loop
+wake_word_result_queue = queue.Queue()
+
 def wake_word_listener():
     """Run wake word detection in a separate thread"""
     print("👂 Wake word listener thread started")
@@ -195,16 +198,16 @@ def wake_word_listener():
         try:
             # Only listen if we are in idle state (allow headless)
             if jarvis_state['current_state'] == 'idle':
-                # print("DEBUG: Checking for wake word...") 
-                if listen_for_wake_word():
-                    print("🟢 Wake word detected (Thread)!")
+                # listen_for_wake_word now returns either False or the transcript string
+                wake_text = listen_for_wake_word()
+                if wake_text:
+                    print(f"🟢 Wake word detected (Thread): '{wake_text}'")
+                    wake_word_result_queue.put(wake_text)
                     wake_word_event.set()
                     # Wait for state to change before checking again
-                    # This prevents double detection before main loop can pick it up
                     while jarvis_state['current_state'] == 'idle' and jarvis_state['is_running'] and wake_word_event.is_set():
                         time.sleep(0.1)
             else:
-                # print(f"DEBUG: Skipping wake word check. State: {jarvis_state['current_state']}")
                 time.sleep(0.5)
         except Exception as e:
             print(f"❌ Error in wake word listener: {e}")
@@ -234,6 +237,19 @@ def jarvis_loop():
                 print("🟢 Wake word event received!")
                 wake_word_event.clear()
                 wake_word_detected = True
+                
+                # Check if there's trailing text after "Jarvis"
+                try:
+                    full_wake_text = wake_word_result_queue.get_nowait()
+                    # Try to find "jarvis" and take everything after it
+                    match = re.search(r'jarvis\s*(.*)', full_wake_text.lower())
+                    if match:
+                        potential_command = match.group(1).strip()
+                        if potential_command:
+                            print(f"💬 Extracted command from wake word: '{potential_command}'")
+                            user_text = potential_command
+                except queue.Empty:
+                    pass
             
             # If nothing detected, loop again (short sleep to prevent CPU hogging)
             if not wake_word_detected:

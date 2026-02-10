@@ -761,3 +761,57 @@ Acknowledged. Initiating system shutdown. Good night, sir.
 [20260208-193533] You: open WhatsApp and call Aditi Canada
 [20260208-193533] Jarvis: Certainly, sir.  Initiating call to Aditi Canada.
 
+[20260208-221308] You: hey can u open whatsapp for me
+[20260208-221308] Jarvis: Certainly, sir.
+
+[20260208-221755] You: open whatsapp
+[20260208-221755] Jarvis: Certainly, sir.
+
+[20260209-184021] You: wake up
+[20260209-184021] Jarvis: Right away, sir. Initializing all primary systems now.
+
+[20260209-184613] You: wake up
+[20260209-184613] Jarvis: Right away, sir. Initializing primary systems. AutoCAD on screen one, Revit and SolidWorks on screen two.
+
+[20260209-184649] You: wake up
+[20260209-184649] Jarvis: Right away, sir. Initializing primary systems. AutoCAD on screen one, Revit and SolidWorks on screen two.
+
+[20260209-184939] You: wake up
+[20260209-184939] Jarvis: Initializing wake ups, sir.
+
+[20260209-185109] You: wake up
+[20260209-185109] Jarvis: Initializing wake ups, sir.
+
+[20260209-185206] You: Jarvis wake up
+[20260209-185206] Jarvis: Initializing wake ups, sir.
+
+[20260209-185536] You: wake up
+[20260209-185536] Jarvis: Initializing wake ups, sir.
+
+[20260209-190001] You: wake up
+[20260209-190001] Jarvis: Initializing wake ups, sir.
+
+[20260209-190302] You: wake up daddy's home
+[20260209-190302] Jarvis: Initializing wake ups, sir.
+
+[20260209-190717] You: open Microsoft Edge on screen two
+[20260209-190717] Jarvis: Acknowledged, sir.
+
+[20260209-190743] You: Jarvis
+[20260209-190743] Jarvis: I’m doing excellent, sir. How can I help you?
+
+[20260209-190800] You: open Edge on screen
+[20260209-190800] Jarvis: Confirmed, sir.
+
+[20260209-190839] You: open add on screen
+[20260209-190839] Jarvis: Confirmed, sir.
+
+[20260209-190849] You: open ads on monitor 2
+[20260209-190849] Jarvis: Acknowledged, sir.
+
+[20260209-190902] You: open Edge on my
+[20260209-190902] Jarvis: Confirmed, sir.
+
+[20260209-190921] You: open Edge
+[20260209-190921] Jarvis: Confirmed, sir.
+

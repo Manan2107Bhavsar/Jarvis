@@ -7,3 +7,5 @@ pyaudio
 pygame
 websockets
 beautifulsoup4
+pywin32
+screeninfo

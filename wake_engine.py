@@ -21,7 +21,7 @@ def listen_for_wake_word():
             
             if "jarvis" in text:
                 print("✨ Wake word detected!")
-                return True
+                return text
         except sr.WaitTimeoutError:
             return False
         except sr.UnknownValueError:
